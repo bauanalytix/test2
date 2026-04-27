@@ -64,7 +64,7 @@ Welche Tätigkeit wird ausgeführt?<br>
 
 <div id="mengeBox"></div>
 
-<button onclick="next(2)">Weiter</button>
+<button onclick="next(3)">Weiter</button>
 </div>
 
 <!-- STEP 2 -->
@@ -82,7 +82,6 @@ Hat diese Person Kenntnisse über die TRGS 521?<br>
 
 <div id="warnTRGS" class="warn hidden">
 ⚠ Achtung: Bauleiter ohne TRGS 521 Kenntnisse – Fortfahren erfolgt auf eigenes Risiko.
-<br><button onclick="next(3)">Trotzdem weiter</button>
 </div>
 
 <button onclick="back(1)">Zurück</button>
@@ -102,7 +101,6 @@ Liegen folgende Unterlagen im Baustellenordner ausgedruckt vor?<br><br>
 
 <div id="warnDocs" class="warn hidden">
 ⚠ Unterlagen sind unvollständig vorhanden.
-<br><button onclick="next(4)">Trotzdem weiter</button>
 </div>
 
 <button onclick="back(2)">Zurück</button>
@@ -124,7 +122,6 @@ Sind folgende Geräte vollständig vorhanden?<br><br>
 
 <div id="warnEquip" class="warn hidden">
 ⚠ Geräte sind unvollständig vorhanden.
-<br><button onclick="next(5)">Trotzdem weiter</button>
 </div>
 
 <button onclick="back(3)">Zurück</button>
@@ -146,7 +143,6 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 
 <div id="warnPrep" class="warn hidden">
 ⚠ Vorbereitung ist unvollständig.
-<br><button onclick="next(6)">Trotzdem weiter</button>
 </div>
 
 <button onclick="back(4)">Zurück</button>
@@ -182,10 +178,8 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 <label><input type="checkbox" class="end"> Arbeitsbereich gereinigt</label><br>
 <label><input type="checkbox" class="end"> PSA entsorgt</label><br>
 <label><input type="checkbox" class="end"> Öffnungen verschlossen</label><br>
-
 <div id="warnEnd" class="warn hidden">
 ⚠ Abschlussarbeiten sind unvollständig.
-<br><button onclick="next(8)">Trotzdem weiter</button>
 </div>
 
 <button onclick="back(6)">Zurück</button>
@@ -263,8 +257,10 @@ let missing=[...document.querySelectorAll("."+cls)].some(i=>!i.checked);
 
 if(missing){
 document.getElementById(warnId).classList.remove("hidden");
-}else{
+} else {
 document.getElementById(warnId).classList.add("hidden");
+}
+
 next(nextStep);
 }
 }
