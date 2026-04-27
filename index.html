@@ -20,7 +20,7 @@ button {padding:10px; margin:5px;}
 .warn {color:red; font-weight:bold; margin-top:10px;}
 .logo {position:absolute; top:10px; right:20px; height:60px;}
 
-  label {
+label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -85,7 +85,7 @@ Hat diese Person Kenntnisse über die TRGS 521?<br>
 </div>
 
 <button onclick="back(1)">Zurück</button>
-<button onclick="next(3)">Weiter</button>
+<button onclick="checkTRGSContinue()">Weiter</button>
 </div>
 
 <!-- STEP 3 -->
@@ -178,6 +178,7 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 <label><input type="checkbox" class="end"> Arbeitsbereich gereinigt</label><br>
 <label><input type="checkbox" class="end"> PSA entsorgt</label><br>
 <label><input type="checkbox" class="end"> Öffnungen verschlossen</label><br>
+
 <div id="warnEnd" class="warn hidden">
 ⚠ Abschlussarbeiten sind unvollständig.
 </div>
@@ -261,17 +262,16 @@ document.getElementById(warnId).classList.remove("hidden");
 document.getElementById(warnId).classList.add("hidden");
 }
 
-  function checkTRGSContinue(){
-
-if(trgs.value === "nein"){
-    document.getElementById("warnTRGS").classList.remove("hidden");
-} else {
-    document.getElementById("warnTRGS").classList.add("hidden");
-}
-
-next(3);
-}
 next(nextStep);
+}
+
+function checkTRGSContinue(){
+if(trgs.value==="nein"){
+document.getElementById("warnTRGS").classList.remove("hidden");
+} else {
+document.getElementById("warnTRGS").classList.add("hidden");
+}
+next(3);
 }
 
 function toggleText(){
