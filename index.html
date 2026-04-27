@@ -261,6 +261,16 @@ document.getElementById(warnId).classList.remove("hidden");
 document.getElementById(warnId).classList.add("hidden");
 }
 
+  function checkTRGSContinue(){
+
+if(trgs.value === "nein"){
+    document.getElementById("warnTRGS").classList.remove("hidden");
+} else {
+    document.getElementById("warnTRGS").classList.add("hidden");
+}
+
+next(3);
+}
 next(nextStep);
 }
 
