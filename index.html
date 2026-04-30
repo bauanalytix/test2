@@ -397,31 +397,21 @@ if(keine.checked){
 
 doc.setTextColor(0,0,0);
 
-doc.setTextColor(0,0,0);
-y+=5;
-});
-
-y+=3;
-}
-
-drawSection("Unterlagen", collectRows("docs"));
-drawSection("Geräte", collectRows("equip"));
-drawSection("Vorbereitung", collectRows("prep"));
-drawSection("Abschluss", collectRows("end"));
-
+// Vorkommnisse
 doc.setFont("helvetica","bold");
-doc.text("Freigabe",10,y); y+=5;
+doc.text("Besondere Vorkommnisse",10,y); y+=5;
 
 doc.setFont("helvetica","normal");
-doc.text(`Freigegeben durch: ${freigabe.value}`,10,y); y+=5;
-doc.text(`Sichtkontrolle: ${sicht.checked?"ja":"nein"}`,10,y); y+=5;
-doc.text(`Freimessung: ${mess.checked?"ja":"nein"}`,10,y); y+=8;
 
-doc.text(`Abfälle: ${abfall.value}`,10,y); y+=8;
+if(keine.checked){
+  doc.setTextColor(0,150,0);
+  doc.text("keine",120,y);
+}else{
+  doc.setTextColor(200,0,0);
+  doc.text(vorfall.value,10,y);
+}
 
-doc.text("Vorkommnisse:",10,y); y+=5;
-doc.text(keine.checked ? "keine" : vorfall.value,10,y);
-  
+doc.setTextColor(0,0,0);
 doc.save("KMF_Protokoll.pdf");
 }
 
