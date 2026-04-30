@@ -273,10 +273,14 @@ function toggleText(){
 vorfall.disabled=keine.checked;
 }
 
-function collect(cls){
+function collectRows(cls){
 return [...document.querySelectorAll("."+cls)]
-.map(i=>(i.checked?"ja":"nicht vorhanden")+" - "+i.parentElement.innerText)
-.join("\n");
+.map(i => {
+    return {
+        text: i.parentElement.innerText.trim(),
+        value: i.checked ? "ja" : "nein"
+    };
+});
 }
 
 function finish(){
@@ -323,7 +327,67 @@ Vorkommnisse:
 ${keine.checked?"keine":vorfall.value}
 `;
 
-doc.text(text,10,10);
+let y = 10;
+
+doc.setFont("helvetica","bold");
+doc.setFontSize(14);
+doc.text("KMF-Arbeitsprotokoll", 10, y);
+
+y += 8;
+doc.setFont("helvetica","normal");
+doc.setFontSize(8);
+
+doc.text(`Start: ${startTime}`, 10, y); y+=5;
+doc.text(`Ende: ${new Date().toLocaleString()}`, 10, y); y+=8;
+
+doc.text(`Gebäude: ${geb.value}`, 10, y); y+=5;
+doc.text(`Raum: ${raum.value}`, 10, y); y+=5;
+doc.text(`Tätigkeit: ${task.value}`, 10, y); y+=5;
+doc.text(`Menge: ${menge.value}`, 10, y); y+=8;
+
+function drawSection(title, rows){
+doc.setFont("helvetica","bold");
+doc.text(title, 10, y);
+y+=5;
+
+doc.setFont("helvetica","normal");
+
+rows.forEach(r=>{
+doc.text(r.text, 10, y);
+
+if(r.value === "ja"){
+doc.setTextColor(0,150,0);
+doc.text("ja", 150, y);
+}else{
+doc.setTextColor(200,0,0);
+doc.text("nein", 150, y);
+}
+
+doc.setTextColor(0,0,0);
+y+=5;
+});
+
+y+=3;
+}
+
+drawSection("Unterlagen", collectRows("docs"));
+drawSection("Geräte", collectRows("equip"));
+drawSection("Vorbereitung", collectRows("prep"));
+drawSection("Abschluss", collectRows("end"));
+
+doc.setFont("helvetica","bold");
+doc.text("Freigabe",10,y); y+=5;
+
+doc.setFont("helvetica","normal");
+doc.text(`Freigegeben durch: ${freigabe.value}`,10,y); y+=5;
+doc.text(`Sichtkontrolle: ${sicht.checked?"ja":"nein"}`,10,y); y+=5;
+doc.text(`Freimessung: ${mess.checked?"ja":"nein"}`,10,y); y+=8;
+
+doc.text(`Abfälle: ${abfall.value}`,10,y); y+=8;
+
+doc.text("Vorkommnisse:",10,y); y+=5;
+doc.text(keine.checked ? "keine" : vorfall.value,10,y);
+  
 doc.save("KMF_Protokoll.pdf");
 }
 
