@@ -20,7 +20,7 @@ button {padding:10px; margin:5px;}
 .warn {color:red; font-weight:bold; margin-top:10px;}
 .logo {position:absolute; top:10px; right:20px; height:60px;}
 
-  label {
+label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -86,7 +86,7 @@ Hat diese Person Kenntnisse über die TRGS 521?<br>
 </div>
 
 <button onclick="back(1)">Zurück</button>
-<button onclick="next(3)">Weiter</button>
+<button onclick="checkWarnTRGS()">Weiter</button>
 </div>
 
 <!-- STEP 3 -->
@@ -113,8 +113,6 @@ Liegen folgende Unterlagen im Baustellenordner ausgedruckt vor?<br><br>
 <div class="box hidden" id="step4">
 <h2>4. Geräte und persönliche Schutzausrüstung</h2>
 
-Sind folgende Geräte vollständig vorhanden?<br><br>
-
 <label><input type="checkbox" class="equip"> Industriestaubsauger Staubklasse H</label><br>
 <label><input type="checkbox" class="equip"> FFP3-Atemschutz mit Ausatemventil</label><br>
 <label><input type="checkbox" class="equip"> Schutzanzug Typ 5</label><br>
@@ -135,13 +133,10 @@ Sind folgende Geräte vollständig vorhanden?<br><br>
 <div class="box hidden" id="step5">
 <h2>5. Vorbereitung</h2>
 
-Sind folgende Vorbereitungen abgeschlossen?<br><br>
-
 <label><input type="checkbox" class="prep"> Arbeitsbereich abgesperrt</label><br>
 <label><input type="checkbox" class="prep"> Nutzer entfernt</label><br>
 <label><input type="checkbox" class="prep"> Folie ausgelegt</label><br>
 
-<h3>Zusätzliche Hinweise:</h3>
 <textarea id="prepText"></textarea>
 
 <div id="warnPrep" class="warn hidden">
@@ -156,20 +151,6 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 <!-- STEP 6 -->
 <div class="box hidden" id="step6">
 <h2>6. Durchführung</h2>
-
-<h3 style="color:red;">Das oberste Ziel ist eine Faserfreisetzung vermeiden</h3>
-
-<ul>
-<li>PSA anlegen</li>
-<li>Material vorsichtig und staubarm ausbauen</li>
-<li>wenn möglich: Material leicht befeuchten mit Sprühflasche</li>
-<li>Material nicht fallen lassen</li>
-<li>Material direkt in BigBagsverpacken</li>
-<li>Arbeitsbereich regelmäßig absaugen</li>
-<li>Wenn möglich, nach Ausbau Bauteilöffnungen mit Folie verschließen</li>
-<li>Am Arbeitsende Arbeitsbereich gut absaugen, so dass keine Fasern mehr sichtbar sind</li>
-<li>Am Ende PSA ablegen</li> 
-</ul>
 
 <button onclick="back(5)">Zurück</button>
 <button onclick="next(7)">Alles verstanden</button>
@@ -190,48 +171,6 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 
 <button onclick="back(6)">Zurück</button>
 <button onclick="checkWarn('end','warnEnd',8)">Weiter</button>
-</div>
-
-<!-- STEP 8 -->
-<div class="box hidden" id="step8">
-<h2>8. Freigabe</h2>
-
-Wer hat den Arbeitsbereich freigegeben?<br>
-<input id="freigabe"><br><br>
-
-<label><input type="checkbox" id="sicht"> Sichtkontrolle durchgeführt</label><br>
-<label><input type="checkbox" id="mess"> Freimessung durchgeführt</label><br>
-
-<button onclick="back(7)">Zurück</button>
-<button onclick="next(9)">Weiter</button>
-</div>
-
-<!-- STEP 9 -->
-<div class="box hidden" id="step9">
-<h2>9. Abfälle</h2>
-
-Sind die Abfälle zum Zwischenlager transportiert worden?<br>
-<select id="abfall">
-<option>ja</option>
-<option>nein</option>
-</select>
-
-<button onclick="back(8)">Zurück</button>
-<button onclick="next(10)">Weiter</button>
-</div>
-
-<!-- STEP 10 -->
-<div class="box hidden" id="step10">
-<h2>10. Besondere Vorkommnisse</h2>
-
-Gab es im Verlauf der Arbeiten besondere Vorkommnisse?<br><br>
-
-<label><input type="checkbox" id="keine" onclick="toggleText()"> keine</label><br><br>
-
-<textarea id="vorfall"></textarea>
-
-<button onclick="back(9)">Zurück</button>
-<button onclick="finish()">Abschlussbericht erstellen</button>
 </div>
 
 <script>
@@ -269,135 +208,12 @@ next(nextStep);
 }
 }
 
-function toggleText(){
-vorfall.disabled=keine.checked;
+function checkWarnTRGS(){
+if(trgs.value === "nein"){
+  document.getElementById("warnTRGS").classList.remove("hidden");
+} else {
+  next(3);
 }
-
-function collectRows(cls){
-return [...document.querySelectorAll("."+cls)]
-.map(i => {
-    return {
-        text: i.parentElement.innerText.trim(),
-        value: i.checked ? "ja" : "nein"
-    };
-});
-}
-
-function finish(){
-
-const {jsPDF}=window.jspdf;
-let doc=new jsPDF();
-doc.setFontSize(8);
-
-let y = 10;
-
-doc.setFont("helvetica","bold");
-doc.setFontSize(14);
-doc.text("KMF-ArBEITSPROTOKOLL", 10, y);
-
-y += 8;
-doc.setFont("helvetica","normal");
-doc.setFontSize(9);
-
-doc.text(`Start: ${startTime}`, 10, y); y+=5;
-doc.text(`Ende: ${new Date().toLocaleString()}`, 10, y); y+=8;
-
-let einheit = task.value.includes("Rohr") ? "m" : "m²";
-
-doc.text(`Gebäude: ${geb.value}`, 10, y); y+=5;
-doc.text(`Raum: ${raum.value}`, 10, y); y+=5;
-doc.text(`Tätigkeit: ${task.value}`, 10, y); y+=5;
-doc.text(`Menge: ${menge.value} ${einheit}`, 10, y); y+=8;
-
-// Bauleiter
-doc.text(`Bauleiter: ${bauleiter.value}`, 10, y); y+=5;
-
-if(trgs.value === "ja"){
-  doc.setTextColor(0,150,0);
-  doc.text("Kenntnisse TRGS 521: ja", 10, y);
-}else{
-  doc.setTextColor(200,0,0);
-  doc.text("Kenntnisse TRGS 521: nein", 10, y);
-}
-doc.setTextColor(0,0,0);
-y += 8;
-
-// Tabellenartige Darstellung
-function drawSection(title, rows){
-doc.setFont("helvetica","bold");
-doc.text(title, 10, y);
-y+=5;
-
-doc.setFont("helvetica","normal");
-
-rows.forEach(r=>{
-doc.text(r.text, 10, y);
-
-if(r.value === "ja"){
-  doc.setTextColor(0,150,0);
-  doc.text("ja", 120, y);
-}else{
-  doc.setTextColor(200,0,0);
-  doc.text("nein", 120, y);
-}
-
-doc.setTextColor(0,0,0);
-
-// Linie für bessere Lesbarkeit
-doc.line(10, y+1, 200, y+1);
-
-y+=6;
-});
-
-y+=3;
-}
-
-drawSection("Unterlagen", collectRows("docs"));
-drawSection("Geräte", collectRows("equip"));
-drawSection("Vorbereitung", collectRows("prep"));
-drawSection("Abschluss", collectRows("end"));
-
-// Freigabe
-doc.setFont("helvetica","bold");
-doc.text("Freigabe",10,y); y+=5;
-
-doc.setFont("helvetica","normal");
-doc.text(`Freigegeben durch: ${freigabe.value}`,10,y); y+=5;
-
-doc.text("Sichtkontrolle:",10,y);
-doc.text(sicht.checked ? "ja" : "nein",120,y); y+=5;
-
-doc.text("Freimessung:",10,y);
-doc.text(mess.checked ? "ja" : "nein",120,y); y+=8;
-
-// Abfälle
-if(abfall.value === "ja"){
-  doc.setTextColor(0,150,0);
-  doc.text("Die Abfälle wurden ordnungsgemäß in das Zwischenlager transportiert.",10,y);
-}else{
-  doc.setTextColor(200,0,0);
-  doc.text("Die Abfälle wurden NICHT in das Zwischenlager transportiert.",10,y);
-}
-doc.setTextColor(0,0,0);
-y+=8;
-
-// Vorkommnisse
-doc.setFont("helvetica","bold");
-
-doc.text("Besondere Vorkommnisse",10,y); y+=5;
-
-doc.setFont("helvetica","normal");
-
-if(keine.checked){
-  doc.setTextColor(0,150,0);
-  doc.text("keine",120,y);
-}else{
-  doc.setTextColor(200,0,0);
-  doc.text(vorfall.value,10,y);
-}
-
-doc.setTextColor(0,0,0);
-doc.save("KMF_Protokoll.pdf");
 }
 
 updateMenge();
