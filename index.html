@@ -289,44 +289,6 @@ const {jsPDF}=window.jspdf;
 let doc=new jsPDF();
 doc.setFontSize(8);
 
-let text=`
-Start: ${startTime}
-Ende: ${new Date().toLocaleString()}
-
-Gebäude: ${geb.value}
-Raum: ${raum.value}
-
-Tätigkeit: ${task.value}
-Menge: ${menge.value}
-
-Bauleiter: ${bauleiter.value}
-TRGS Kenntnisse: ${trgs.value}
-
-Unterlagen:
-${collect("docs")}
-
-Geräte:
-${collect("equip")}
-
-Vorbereitung:
-${collect("prep")}
-${prepText.value}
-
-Abschluss:
-${collect("end")}
-
-Freigabe:
-${freigabe.value}
-Sichtkontrolle: ${sicht.checked?"ja":"nein"}
-Freimessung: ${mess.checked?"ja":"nein"}
-
-Abfälle:
-${abfall.value}
-
-Vorkommnisse:
-${keine.checked?"keine":vorfall.value}
-`;
-
 let y = 10;
 
 doc.setFont("helvetica","bold");
