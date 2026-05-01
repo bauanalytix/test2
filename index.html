@@ -274,7 +274,8 @@ function toggleText(){
   document.getElementById("vorfall").disabled = document.getElementById("keine").checked;
 }
 
-  let trgsAntwort = null;
+let trgsAntwort = null;
+let abfallAntwort = null;
 
 function answerTRGS(val){
   trgsAntwort = val;
@@ -298,7 +299,8 @@ function continueAfterTRGS(){
   }
 }
 
-  function answerAbfall(val){
+function answerAbfall(val){
+  abfallAntwort = val;
 
   if(val === "ja"){
     document.getElementById("warnAbfall").classList.add("hidden");
@@ -344,7 +346,7 @@ function finish(){
 
   doc.text(`Bauleiter: ${document.getElementById("bauleiter").value}`, 10, y); y+=5;
 
-  if(document.getElementById("trgs").value === "ja"){
+if(trgsAntwort === "ja"){
     doc.setTextColor(0,150,0);
     doc.text("Kenntnisse TRGS 521: ja", 10, y);
   }else{
@@ -409,7 +411,7 @@ function finish(){
 
   doc.setFont("helvetica","normal");
 
-  if(document.getElementById("abfall").value === "ja"){
+  if(abfallAntwort === "ja"){
     doc.setTextColor(0,150,0);
     doc.text("Die Abfälle wurden in das Zwischenlager transportiert.",10,y);
   }else{
