@@ -39,7 +39,8 @@ textarea {width:100%; height:60px;}
 <img src="bauanalytix_rz_farbe einzeln_klein.jpg" class="logo" onerror="this.style.display='none'">
 
 <h1>KMF-Arbeitsprotokoll</h1>
-
+<button onclick="newProtocol()">Neues Protokoll starten</button>
+  
 <script>
 let startTime = new Date().toLocaleString();
 let currentStep = 1;
@@ -248,8 +249,10 @@ function updateMenge(){
 }
 
 function next(step){
+  currentStep = step;
   document.querySelectorAll('.box').forEach(b=>b.classList.add('hidden'));
   document.getElementById('step'+step).classList.remove('hidden');
+  saveData();
 }
 
 function back(step){ 
@@ -440,10 +443,80 @@ if(trgsAntwort === "ja"){
   doc.setTextColor(0,0,0);
   doc.save("KMF_Protokoll.pdf");
 }
+function saveData(){
+  let data = {
+    startTime: startTime,
+    currentStep: currentStep,
+    trgsAntwort: trgsAntwort,
+    abfallAntwort: abfallAntwort,
+    geb: document.getElementById("geb").value,
+    raum: document.getElementById("raum").value,
+    task: document.getElementById("task").value,
+    menge: document.getElementById("menge") ? document.getElementById("menge").value : "",
+    bauleiter: document.getElementById("bauleiter").value,
+    prepText: document.getElementById("prepText").value,
+    freigabe: document.getElementById("freigabe").value,
+    sicht: document.getElementById("sicht").checked,
+    mess: document.getElementById("mess").checked,
+    keine: document.getElementById("keine").checked,
+    vorfall: document.getElementById("vorfall").value,
+    docs: [...document.querySelectorAll(".docs")].map(i=>i.checked),
+    equip: [...document.querySelectorAll(".equip")].map(i=>i.checked),
+    prep: [...document.querySelectorAll(".prep")].map(i=>i.checked),
+    end: [...document.querySelectorAll(".end")].map(i=>i.checked)
+  };
 
+  localStorage.setItem("kmfProtokoll", JSON.stringify(data));
+}
+
+function loadData(){
+  let saved = localStorage.getItem("kmfProtokoll");
+  if(!saved) return;
+
+  let data = JSON.parse(saved);
+
+  startTime = data.startTime || startTime;
+  currentStep = data.currentStep || 1;
+  trgsAntwort = data.trgsAntwort || null;
+  abfallAntwort = data.abfallAntwort || null;
+
+  document.getElementById("geb").value = data.geb || "";
+  document.getElementById("raum").value = data.raum || "";
+  document.getElementById("task").value = data.task || document.getElementById("task").value;
+
+  updateMenge();
+
+  if(document.getElementById("menge")) document.getElementById("menge").value = data.menge || "";
+
+  document.getElementById("bauleiter").value = data.bauleiter || "";
+  document.getElementById("prepText").value = data.prepText || "";
+  document.getElementById("freigabe").value = data.freigabe || "";
+  document.getElementById("sicht").checked = data.sicht || false;
+  document.getElementById("mess").checked = data.mess || false;
+  document.getElementById("keine").checked = data.keine || false;
+  document.getElementById("vorfall").value = data.vorfall || "";
+
+  [...document.querySelectorAll(".docs")].forEach((i,n)=>i.checked = data.docs?.[n] || false);
+  [...document.querySelectorAll(".equip")].forEach((i,n)=>i.checked = data.equip?.[n] || false);
+  [...document.querySelectorAll(".prep")].forEach((i,n)=>i.checked = data.prep?.[n] || false);
+  [...document.querySelectorAll(".end")].forEach((i,n)=>i.checked = data.end?.[n] || false);
+
+  next(currentStep);
+}
+
+function newProtocol(){
+  if(confirm("Soll ein neues Protokoll gestartet werden? Der gespeicherte Zwischenstand wird gelöscht.")){
+    localStorage.removeItem("kmfProtokoll");
+    location.reload();
+  }
+}
+
+document.addEventListener("input", saveData);
+document.addEventListener("change", saveData);
+document.addEventListener("click", saveData);
 updateMenge();
-
+loadData();
 </script>
 
-</body>
+  </body>
 </html>
