@@ -208,13 +208,15 @@ Wer hat den Arbeitsbereich freigegeben?<br>
 <h2>9. Abfälle</h2>
 
 Sind die Abfälle zum Zwischenlager transportiert worden?<br>
-<select id="abfall">
-<option>ja</option>
-<option>nein</option>
-</select>
+<button onclick="answerAbfall('ja')">Ja</button>
+<button onclick="answerAbfall('nein')">Nein</button>
+
+<div id="warnAbfall" class="warn hidden">
+⚠ Abfälle wurden nicht in das Zwischenlager transportiert.
+<br><button onclick="next(10)">Trotzdem weiter</button>
+</div>
 
 <button onclick="back(8)">Zurück</button>
-<button onclick="next(10)">Weiter</button>
 </div>
 
 <!-- STEP 10 -->
@@ -293,6 +295,16 @@ function continueAfterTRGS(){
     document.getElementById("warnTRGS").classList.remove("hidden");
   }else{
     alert("Bitte Auswahl treffen (Ja/Nein)");
+  }
+}
+
+  function answerAbfall(val){
+
+  if(val === "ja"){
+    document.getElementById("warnAbfall").classList.add("hidden");
+    next(10);
+  }else{
+    document.getElementById("warnAbfall").classList.remove("hidden");
   }
 }
 function collectRows(cls){
