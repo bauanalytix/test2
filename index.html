@@ -75,10 +75,8 @@ Wer ist vor Ort bei der Tätigkeit <b id="taskText"></b> der Bauleiter?<br>
 <input id="bauleiter"><br><br>
 
 Hat diese Person Kenntnisse über die TRGS 521?<br>
-<select id="trgs" onchange="showWarn('warnTRGS')">
-<option>ja</option>
-<option>nein</option>
-</select>
+<button onclick="answerTRGS('ja')">Ja</button>
+<button onclick="answerTRGS('nein')">Nein</button>
 
 <div id="warnTRGS" class="warn hidden">
 ⚠ Achtung: Bauleiter ohne TRGS 521 Kenntnisse – Fortfahren erfolgt auf eigenes Risiko.
@@ -86,7 +84,7 @@ Hat diese Person Kenntnisse über die TRGS 521?<br>
 </div>
 
 <button onclick="back(1)">Zurück</button>
-<button onclick="next(3)">Weiter</button>
+<button onclick="continueAfterTRGS()">Weiter</button>
 </div>
 
 <!-- STEP 3 -->
@@ -275,6 +273,28 @@ function toggleText(){
   document.getElementById("vorfall").disabled = document.getElementById("keine").checked;
 }
 
+  let trgsAntwort = null;
+
+function answerTRGS(val){
+  trgsAntwort = val;
+
+  if(val === "nein"){
+    document.getElementById("warnTRGS").classList.remove("hidden");
+  }else{
+    document.getElementById("warnTRGS").classList.add("hidden");
+  }
+}
+
+function continueAfterTRGS(){
+  if(trgsAntwort === "ja"){
+    next(3);
+  }else if(trgsAntwort === "nein"){
+    // Warnung bleibt sichtbar, kein Weiter
+    document.getElementById("warnTRGS").classList.remove("hidden");
+  }else{
+    alert("Bitte Auswahl treffen (Ja/Nein)");
+  }
+}
 function collectRows(cls){
   return [...document.querySelectorAll("."+cls)].map(i => {
     return {
