@@ -529,9 +529,34 @@ if(savedImg){
 
 function newProtocol(){
   if(confirm("Soll ein neues Protokoll gestartet werden? Der gespeicherte Zwischenstand wird gelöscht.")){
+
     localStorage.removeItem("kmfProtokoll");
     localStorage.removeItem("prepImage");
-    location.reload();
+
+    startTime = new Date().toLocaleString();
+    currentStep = 1;
+    trgsAntwort = null;
+    abfallAntwort = null;
+
+    document.querySelectorAll("input[type='text'], textarea").forEach(i => i.value = "");
+    document.querySelectorAll("input[type='checkbox']").forEach(i => i.checked = false);
+
+    document.getElementById("geb").value = "";
+    document.getElementById("raum").value = "";
+    document.getElementById("bauleiter").value = "";
+    document.getElementById("prepText").value = "";
+    document.getElementById("freigabe").value = "";
+    document.getElementById("vorfall").value = "";
+
+    document.getElementById("task").selectedIndex = 0;
+    updateMenge();
+
+    document.getElementById("preview").src = "";
+    document.getElementById("preview").style.display = "none";
+
+    document.querySelectorAll(".warn").forEach(w => w.classList.add("hidden"));
+
+    next(1);
   }
 }
 
