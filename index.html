@@ -143,6 +143,12 @@ Sind folgende Vorbereitungen abgeschlossen?<br><br>
 <h3>Zusätzliche Hinweise:</h3>
 <textarea id="prepText"></textarea>
 
+<br><br>
+Foto der Situation vor Ort:<br>
+<input type="file" accept="image/*" capture="environment" onchange="handleImage(event)">
+<br><br>
+<img id="preview" style="max-width:100%; display:none;">
+  
 <div id="warnPrep" class="warn hidden">
 ⚠ Vorbereitung ist unvollständig.
 <br><button onclick="next(6)">Trotzdem weiter</button>
@@ -485,7 +491,12 @@ function loadData(){
   document.getElementById("task").value = data.task || document.getElementById("task").value;
 
   updateMenge();
-
+let savedImg = localStorage.getItem("prepImage");
+if(savedImg){
+  let img = document.getElementById("preview");
+  img.src = savedImg;
+  img.style.display = "block";
+}
   if(document.getElementById("menge")) document.getElementById("menge").value = data.menge || "";
 
   document.getElementById("bauleiter").value = data.bauleiter || "";
@@ -511,6 +522,23 @@ function newProtocol(){
   }
 }
 
+  function handleImage(event){
+  const file = event.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    let img = document.getElementById("preview");
+    img.src = e.target.result;
+    img.style.display = "block";
+
+    // optional speichern
+    localStorage.setItem("prepImage", e.target.result);
+  };
+
+  reader.readAsDataURL(file);
+}
 document.addEventListener("input", saveData);
 document.addEventListener("change", saveData);
 document.addEventListener("click", saveData);
