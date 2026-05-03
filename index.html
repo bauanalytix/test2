@@ -410,7 +410,7 @@ if(savedImg){
   doc.text("Foto Vorbereitung / Situation vor Ort", 10, y);
   y += 5;
 
-  doc.addImage(savedImg, "PNG", 10, y, 80, 60);
+  doc.addImage(savedImg, "JPEG", 10, y, 80, 60);
   y += 65;
 }
 
@@ -530,23 +530,42 @@ if(savedImg){
 function newProtocol(){
   if(confirm("Soll ein neues Protokoll gestartet werden? Der gespeicherte Zwischenstand wird gelöscht.")){
     localStorage.removeItem("kmfProtokoll");
+    localStorage.removeItem("prepImage");
     location.reload();
   }
 }
 
-  function handleImage(event){
+function handleImage(event){
   const file = event.target.files[0];
   if(!file) return;
 
   const reader = new FileReader();
 
   reader.onload = function(e){
-    let img = document.getElementById("preview");
-    img.src = e.target.result;
-    img.style.display = "block";
+    const image = new Image();
 
-    // optional speichern
-    localStorage.setItem("prepImage", e.target.result);
+    image.onload = function(){
+      const canvas = document.createElement("canvas");
+
+      const maxWidth = 800;
+      const scale = maxWidth / image.width;
+      canvas.width = maxWidth;
+      canvas.height = image.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const compressedImage = canvas.toDataURL("image/jpeg", 0.7);
+
+      let img = document.getElementById("preview");
+      img.src = compressedImage;
+      img.style.display = "block";
+
+      localStorage.setItem("prepImage", compressedImage);
+      saveData();
+    };
+
+    image.src = e.target.result;
   };
 
   reader.readAsDataURL(file);
