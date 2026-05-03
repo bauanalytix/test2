@@ -398,11 +398,23 @@ if(trgsAntwort === "ja"){
   drawSection("Vorbereitung", collectRows("prep"));
 
   if(document.getElementById("prepText").value.trim() !== ""){
-    doc.text(`Zusätzliche Hinweise: ${document.getElementById("prepText").value}`, 10, y);
-    y+=8;
-  }
+  doc.text(`Zusätzliche Hinweise: ${document.getElementById("prepText").value}`, 10, y);
+  y+=8;
+}
 
-  drawSection("Abschluss", collectRows("end"));
+// Foto aus Schritt 5 ins PDF einfügen
+let savedImg = localStorage.getItem("prepImage");
+
+if(savedImg){
+  doc.setFont("helvetica","bold");
+  doc.text("Foto Vorbereitung / Situation vor Ort", 10, y);
+  y += 5;
+
+  doc.addImage(savedImg, "JPEG", 10, y, 80, 60);
+  y += 65;
+}
+
+drawSection("Abschluss", collectRows("end"));
 
   doc.setFont("helvetica","bold");
   doc.text("Freigabe",10,y); 
